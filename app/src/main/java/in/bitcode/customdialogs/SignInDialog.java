@@ -13,6 +13,18 @@ public class SignInDialog extends Dialog {
     private Button mBtnSignIn;
     private Context mContext;
 
+    public interface OnSignInListener {
+        void onSuccess(SignInDialog signInDialog);
+
+        void onFailure(SignInDialog signInDialog);
+    }
+
+    private OnSignInListener mOnSignInListener;
+
+    public void setOnSignInListener(OnSignInListener onSignInListener) {
+        this.mOnSignInListener = onSignInListener;
+    }
+
     public SignInDialog(Context context) {
         super(context);
         mContext = context;
@@ -27,21 +39,24 @@ public class SignInDialog extends Dialog {
         mEdtUsername = findViewById(R.id.edtUsername);
         mEdtPassword = findViewById(R.id.edtPassword);
 
-        mBtnSignIn.setOnClickListener( new BtnSignInClickListener() );
+        mBtnSignIn.setOnClickListener(new BtnSignInClickListener());
     }
 
     private class BtnSignInClickListener implements View.OnClickListener {
         @Override
         public void onClick(View view) {
 
-            if( mEdtUsername.getText().toString().equals("bitcode")) {
-                //action x
-                Toast.makeText( mContext, "Success!", Toast.LENGTH_LONG).show();
-                dismiss();
+            if (mOnSignInListener == null) {
+                return;
             }
-            else {
-                //action y
-                Toast.makeText( mContext, "Failed!", Toast.LENGTH_LONG).show();
+
+            if (mEdtUsername.getText().toString().equals("bitcode")) {
+                //delegate the success event to listener
+                mOnSignInListener.onSuccess(SignInDialog.this);
+
+            } else {
+                //delegate the failure event to listener
+                mOnSignInListener.onFailure(SignInDialog.this);
             }
         }
     }

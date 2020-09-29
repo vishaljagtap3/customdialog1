@@ -23,7 +23,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                new SignInDialog( MainActivity.this ).show();
+                SignInDialog signInDialog = new SignInDialog( MainActivity.this );
+                signInDialog.setOnSignInListener( new MySignInDialogListener() );
+                signInDialog.show();
 
             }
         });
@@ -32,4 +34,20 @@ public class MainActivity extends AppCompatActivity {
     private void mt(String text) {
         Toast.makeText( this, text, Toast.LENGTH_LONG).show();
     }
+
+    private class MySignInDialogListener implements SignInDialog.OnSignInListener {
+
+        @Override
+        public void onSuccess(SignInDialog signInDialog) {
+            mt("My Success code");
+            signInDialog.dismiss();
+        }
+
+        @Override
+        public void onFailure(SignInDialog signInDialog) {
+            mt("My Failure Code");
+        }
+    }
+
+
 }
